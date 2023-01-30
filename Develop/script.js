@@ -1,7 +1,6 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
-$(function () {
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
   // local storage. HINT: What does `this` reference in the click listener
@@ -20,4 +19,43 @@ $(function () {
   // attribute of each time-block be used to do this?
   //
   // TODO: Add code to display the current date in the header of the page.
-});
+
+var dayjs = dayjs()
+
+$('#currentDay').text(dayjs.format("dddd, MM DD, YYYY"))
+
+var currentHour = dayjs.hour()
+var timeBlock = $('.description')
+
+timeBlock.each(function () {
+  var id = $(this).attr('id')
+
+  if (currentHour > id) {
+    $(this).addClass('past')
+  } else if (currentHour == id) {
+    $(this).removeClass('past')
+    $(this).addClass('present')
+  } else {
+    $(this).removeClass('past')
+    $(this).removeClass('present')
+    $(this).addClass('future')
+  }
+})
+
+$('.btn').on("click", function() {
+  var key = $(this).attr('id')
+  var task = $(this).siblings('textarea').val()
+  console.log(key, task)
+  localStorage.setItem(key, task)
+  showTasks()
+})
+
+function showTasks() {
+  for (var i = 9; i < 18; i++) {
+    var currentTask = localStorage.getItem(i)
+    console.log(i, currentTask)
+    $('#'+ i).text(currentTask)
+  }
+}
+
+showTasks()
